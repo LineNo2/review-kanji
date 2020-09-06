@@ -59,6 +59,7 @@ var app = http.createServer(function (request, response) {
             response.end(HTML);
           } else {
             var title = queryData.id;
+            console.log(title);
             db.query(`SELECT * FROM kanji WHERE section=${title} ORDER BY RAND();`, function (error4, results_kanji, fields) {
               if (error4) {
                 console.log(error4);
@@ -242,4 +243,4 @@ var app = http.createServer(function (request, response) {
   }
 });
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
