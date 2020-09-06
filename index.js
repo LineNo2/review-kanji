@@ -117,7 +117,7 @@ var app = http.createServer(function (request, response) {
         else {
           sql = `UPDATE kanji SET result=0 WHERE kanji="${post.kanji}";`
           if (post.answer == result[0]['oto']) {
-            if (request.headers.referer === "http://localhost:3000/test") {
+            if (request.headers.referer.split("/")[3] === "test") {
               response.writeHead(200);
               response.end(`<script>alert("you are right");index++;</script>`);
             }
@@ -131,7 +131,7 @@ var app = http.createServer(function (request, response) {
             });
           }
           else {
-            if (request.headers.referer === "http://localhost:3000/test") {
+            if (request.headers.referer.split("/")[3] === "test") {
               response.writeHead(200);
               response.end(`<script>alert("you are wrong");index++;</script>`);
             }
