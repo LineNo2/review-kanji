@@ -86,7 +86,7 @@ var app = http.createServer(function (request, response) {
       // fs.readFile("./test_page.html", 'utf-8', function (err, data) {
       //   response.end(data);
       // });
-      html = `<!DOCTYPE html> <html> <head> <title>TEST - ${post.section}</title> </head> <script>var item_total; var index=0; `
+      html = `<!DOCTYPE html> <html> <head> <title>TEST - ${post.section}</title> </head> <script>var item_total; var index=0; var blue; var red;`
       db.query(`SELECT * FROM kanji WHERE section=${post.section} ORDER BY RAND();`, function (error3, results_kanji, fields) {
         var index = 0;
         var kanji_count = results_kanji.length;
@@ -95,7 +95,7 @@ var app = http.createServer(function (request, response) {
           html += `${index++} : "${item.kanji}"`
           if (index != kanji_count) { html += `,` }
           else {
-            html += `}</script> <script src="https://code.jquery.com/jquery-3.5.1.min.js"integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script><body> <a href="/"> <h1 style="text-align: center;">漢字勉強</h1> </a> <div id="scoreboard" style="text-align:center; font-size:5vw;"><span id="current_index">1</span>/<span id="total_index"></span></div><h2 style="font-size:20vw; text-align: center;" id="kanji">${results_kanji[0].kanji}</h2> <div style="text-align: center;"> <input type="text" id="textbox" placeholder="音" style="width:15vw; font-size:15vw;"> <p> <button id="execute" style="width:30vw; font-size:10vw;">堤出</button></p> <form method="post" action="/result"> <input type="hidden" name="section" value="${post.section}"> <input id ="move" style="width:30vw; font-size:10vw; opacity:0;margin:10vh" type="submit" value="移動"> </form> </div> <div class="getScript"></div> <script> $('#total_index').text(item_total);function ajaxSend() { $.ajax({ url: "https://review-kanji.herokuapp.com/score_process", data: { answer: $('#textbox').val(), kanji: $('#kanji').text(), }, type: "POST", success: function (result) { $(".getScript").html(result); $('#kanji').text(kanji_table[index]);$('#current_index').text(index+1); $('#textbox').val(''); if(index==item_total){ $('#execute').fadeOut(); $('#textbox').fadeOut();  $('#scoreboard').fadeOut(); $('#kanji').fadeOut(); $('#move').css('opacity','1'); } } });} $('#execute').click(function () { ajaxSend(); }); $(document).keypress(function(event){ var keycode = (event.keyCode ? event.keyCode : event.which); if(keycode == '13'){ ajaxSend(); } }); </script></body></html>`;
+            html += `}</script> <script src="https://code.jquery.com/jquery-3.5.1.min.js"integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script><body> <a href="/"> <h1 style="text-align: center;">漢字勉強</h1> </a> <svg viewBox="0 0 ${kanji_count} 1"></svg><div id="scoreboard" style="text-align:center; font-size:5vw;"><span id="current_index">1</span>/<span id="total_index"></span></div><h2 style="font-size:20vw; text-align: center;" id="kanji">${results_kanji[0].kanji}</h2> <div style="text-align: center;"> <input type="text" id="textbox" placeholder="音" style="width:15vw; font-size:15vw;"> <p> <button id="execute" style="width:30vw; font-size:10vw;">堤出</button></p> <form method="post" action="/result"> <input type="hidden" name="section" value="${post.section}"> <input id ="move" style="width:30vw; font-size:10vw; opacity:0;margin:10vh" type="submit" value="移動"> </form> </div> <div class="getScript"></div> <script> $('#total_index').text(item_total);function ajaxSend() { $.ajax({ url: "https://review-kanji.herokuapp.com/score_process", data: { answer: $('#textbox').val(), kanji: $('#kanji').text(), }, type: "POST", success: function (result) { $(".getScript").html(result); $('#kanji').text(kanji_table[index]);$('#current_index').text(index+1); $('#textbox').val(''); $('#progressBar').append('<line x1="'+index+'" y1="0" x2="'+index+1+'" y2="0" stroke="'+(blue?"blue":"red")+'"</line>'); if(index==item_total){ $('#execute').fadeOut(); $('#textbox').fadeOut();  $('#scoreboard').fadeOut(); $('#kanji').fadeOut(); $('#move').css('opacity','1'); } } });} $('#execute').click(function () { ajaxSend(); }); $(document).keypress(function(event){ var keycode = (event.keyCode ? event.keyCode : event.which); if(keycode == '13'){ ajaxSend(); } }); </script></body></html>`;
           }
         });
         response.end(html);
@@ -119,7 +119,7 @@ var app = http.createServer(function (request, response) {
           if (post.answer == result[0]['oto']) {
             if (request.headers.referer.split("/")[3] === "test") {
               response.writeHead(200);
-              response.end(`<script>alert("you are right");index++;</script>`);
+              response.end(`<script>alert("you are right");index++;blue=1;red=0;</script>`);
             }
             sql = `UPDATE kanji SET result=1 WHERE kanji="${post.kanji}";`
             db.query(sql, function (error_score_process_if, result, fields2) {
@@ -127,20 +127,20 @@ var app = http.createServer(function (request, response) {
                 console.log("error_score_process_if has an error");
               }
               response.writeHead(200);
-              response.end(`<script>alert("you are right");index++;</script>`);
+              response.end(`<script>alert("you are right");index++;blue=1;red=0;</script>`);
             });
           }
           else {
             if (request.headers.referer.split("/")[3] === "test") {
               response.writeHead(200);
-              response.end(`<script>alert("you are wrong");index++;</script>`);
+              response.end(`<script>alert("you are wrong");index++;blue=0;red=1;</script>`);
             }
             db.query(sql, function (error_score_process_else, result, fields2) {
               if (error_score_process_else) {
                 console.log("error_score_process_else  has an error");
               }
               response.writeHead(200);
-              response.end(`<script>alert("you are wrong");index++;</script>`);
+              response.end(`<script>alert("you are wrong");index++;blue=0;red=1;</script>`);
             });
           }
         }
@@ -181,7 +181,7 @@ var app = http.createServer(function (request, response) {
   else if (pathname === '/review') {
     var html = '';
     response.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
-    html = `<!DOCTYPE html> <html> <head> <title>TEST - 復習</title> </head> <script>var item_total; var index=0; `
+    html = `<!DOCTYPE html> <html> <head> <title>TEST - 復習</title> </head> <script>var item_total; var index=0; var blue; var red;`
     db.query(`SELECT * FROM kanji WHERE result=0 ORDER BY RAND();`, function (error_review, results_kanji, fields) {
       if (error_review) {
         console.log("An error occured at error_review");
