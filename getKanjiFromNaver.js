@@ -42,6 +42,8 @@ module.exports = {
         var responseText;
         kanjiDict = {};
 
+        total_page = 5;
+
         for (var i = 1; i <= total_page; i++) {
             console.log(i + "th page saving..");
             await page.goto(currentURL + nextpageARGS + i);
