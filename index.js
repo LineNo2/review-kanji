@@ -1,77 +1,75 @@
 var http = require('http');
 var url = require('url');
 var qs = require('querystring');
-var template = require('./template.js');
-var db = require('./db.js');
+var cheerio = require('cheerio');
+
+var template = require('./lib/template.js');
+var db = require('./lib/db.js');
+var getKanji = require('./getKanjiFromNaver.js');
 
 var connection;
-function handleDisconnect() {
-  connection = db; // Recreate the connection, since
-  // the old one cannot be reused.
-  connection.connect(function (err) {              // The server is either down
-    if (err) {                                     // or restarting (takes a while sometimes).
-      console.log('error when connecting to db:', err);
-      setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
-    }                                     // to avoid a hot loop, and to allow our node script to
-  });                                     // process asynchronous requests in the meantime.
-  // If you're also serving http, display a 503 error.
-  connection.on('error', function (err) {
-    console.log('db error', err);
-    if (err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-      handleDisconnect();                         // lost due to either server restart, or a
-    } else {                                      // connnection idle timeout (the wait_timeout
-      throw err;                                  // server variable configures this)
-    }
-  });
-}
+// function handleDisconnect() {
+//   connection = db; // Recreate the connection, since
+//   // the old one cannot be reused.
+//   connection.connect(function (err) {              // The server is either down
+//     if (err) {                                     // or restarting (takes a while sometimes).
+//       console.log('error when connecting to db:', err);
+//       setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+//     }                                     // to avoid a hot loop, and to allow our node script to
+//   });                                     // process asynchronous requests in the meantime.
+//   // If you're also serving http, display a 503 error.
+//   connection.on('error', function (err) {
+//     console.log('db error', err);
+//     if (err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+//       handleDisconnect();                         // lost due to either server restart, or a
+//     } else {                                      // connnection idle timeout (the wait_timeout
+//       throw err;                                  // server variable configures this)
+//     }
+//   });
+// }
 
 var app = http.createServer(function (request, response) {
   var _url = request.url;
   var queryData = url.parse(_url, true).query;
   var pathname = url.parse(_url, true).pathname;
   if (pathname === '/') {
-    db.query(`SELECT MAX(section) FROM kanji;`, function (error, results, fields) {
-      if (error) {
-        console.log("error");
+    db.query(`SELECT * FROM section_information;`, function (error_1, result_section, fields2) {
+      if (error_1) {
+        console.log("error_1");
       }
-      section_number = results[0]['MAX(section)'];
-
-      db.query(`SELECT uploaded_date FROM section_information ORDER BY id;`, function (error2, result_date, fields2) {
-        if (error2) {
-          console.log("error2");
-        }
-        db.query(`SELECT * FROM section_information;`, function (error3, result_section, fields2) {
-          if (error3) {
-            console.log("error3");
-          }
-          var list = template.list(section_number, result_date);
-          var chart = '';
-          var count = 0;
-          result_section.forEach(function (item) {
-            if (section_number + 1 != count && count != 0) { chart += ","; }
-            chart += `['部分${item.id}', ${item.memorized} ,${item.total - item.memorized} ]`;
-            count++;
-          });
-          if (queryData.id === undefined) {
-            var title = '';
-            var HTML = template.HTML(title, list, '', chart);
-            response.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
-            response.end(HTML);
-          } else {
-            var title = queryData.id;
-            console.log(title);
-            db.query(`SELECT * FROM kanji WHERE section=${title} ORDER BY RAND();`, function (error4, results_kanji, fields) {
-              if (error4) {
-                console.log(error4);
-              }
-              var kanji_table = template.kanji_table(results_kanji, title);
-              var HTML = template.HTML(title, list, kanji_table, chart);
-              response.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
-              response.end(HTML);
-            });
-          }
-        });
+      console.log(result_section);
+      var section_number = result_section.length - 1;
+      var result_date = new Array(result_section.length);
+      console.log(section_number);
+      for (var i = 0; i <= section_number; i++)
+        result_date[i] = result_section[i]['uploaded_date'];
+      console.log(result_date);
+      var list = template.list(section_number, result_date);
+      var chart = '';
+      var count = 0;
+      result_section.forEach(function (item) {
+        if (section_number + 1 != count && count != 0) { chart += ","; }
+        chart += `['部分${item.id}', ${item.memorized} ,${item.total - item.memorized} ]`;
+        count++;
       });
+      if (queryData.id === undefined) {
+        var title = '';
+        var HTML = template.HTML(title, list, '', chart);
+        response.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
+        response.end(HTML);
+      } else {
+        var title = queryData.id;
+        console.log(title);
+        db.query(`SELECT * FROM kanji WHERE section=${title} ORDER BY RAND();`, function (error_2, results_kanji, fields) {
+          if (error_2) {
+            console.log(error_2);
+          }
+          var kanji_table = template.kanji_table(results_kanji, title);
+          var HTML = template.HTML(title, list, kanji_table, chart);
+          response.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
+          response.end(HTML);
+        });
+      }
     });
   }
   else if (pathname === '/test') {
@@ -235,6 +233,14 @@ var app = http.createServer(function (request, response) {
           response.end();
         });
       });
+    });
+  } else if (pathname === '/get') {
+    getKanji.getKanji(function (text, nextSection) {
+      console.log(text);
+      response.writeHead(302, {
+        'Location': nextSection
+      });
+      response.end();
     });
   }
   else {
