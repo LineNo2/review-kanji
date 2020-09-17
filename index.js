@@ -1,32 +1,11 @@
 var http = require('http');
 var url = require('url');
 var qs = require('querystring');
-var cheerio = require('cheerio');
 
 var template = require('./lib/template.js');
 var db = require('./lib/db.js');
 var getKanji = require('./getKanjiFromNaver.js');
 
-var connection;
-// function handleDisconnect() {
-//   connection = db; // Recreate the connection, since
-//   // the old one cannot be reused.
-//   connection.connect(function (err) {              // The server is either down
-//     if (err) {                                     // or restarting (takes a while sometimes).
-//       console.log('error when connecting to db:', err);
-//       setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
-//     }                                     // to avoid a hot loop, and to allow our node script to
-//   });                                     // process asynchronous requests in the meantime.
-//   // If you're also serving http, display a 503 error.
-//   connection.on('error', function (err) {
-//     console.log('db error', err);
-//     if (err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
-//       handleDisconnect();                         // lost due to either server restart, or a
-//     } else {                                      // connnection idle timeout (the wait_timeout
-//       throw err;                                  // server variable configures this)
-//     }
-//   });
-// }
 
 var app = http.createServer(function (request, response) {
   var _url = request.url;
@@ -93,7 +72,7 @@ var app = http.createServer(function (request, response) {
           html += `${index++} : "${item.kanji}"`
           if (index != kanji_count) { html += `,` }
           else {
-            html += `}</script> <script src="https://code.jquery.com/jquery-3.5.1.min.js"integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script><body> <a href="/"> <h1 style="text-align: center;">漢字勉強</h1> </a> <div id="scoreboard" style="text-align:center; font-size:5vw;"><span id="current_index">1</span>/<span id="total_index"></span></div><h2 style="font-size:20vw; text-align: center;" id="kanji">${results_kanji[0].kanji}</h2> <div style="text-align: center;"> <input type="text" id="textbox" placeholder="音" style="width:15vw; font-size:15vw;"> <p> <button id="execute" style="width:30vw; font-size:10vw;">堤出</button></p> <form method="post" action="/result"> <input type="hidden" name="section" value="${post.section}"> <input id ="move" style="width:30vw; font-size:10vw; opacity:0;margin:10vh" type="submit" value="移動"> </form> </div> <div class="getScript"></div> <script> $('#total_index').text(item_total);function ajaxSend() { $.ajax({ url: "http://review-kanji.herokuapp.com/score_process", data: { answer: $('#textbox').val(), kanji: $('#kanji').text(), }, type: "POST", success: function (result) { $(".getScript").html(result); $('#kanji').text(kanji_table[index]);$('#current_index').text(index+1); $('#textbox').val(''); if(index==item_total){ $('#execute').fadeOut(); $('#textbox').fadeOut();  $('#scoreboard').fadeOut(); $('#kanji').fadeOut(); $('#move').css('opacity','1'); } } });} $('#execute').click(function () { ajaxSend(); }); $(document).keypress(function(event){ var keycode = (event.keyCode ? event.keyCode : event.which); if(keycode == '13'){ ajaxSend(); } }); </script></body></html>`;
+            html += `}</script> <script src="https://code.jquery.com/jquery-3.5.1.min.js"integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script><style> ::-webkit-scrollbar { width: 2vw;}::-webkit-scrollbar-track { background: white; } ::-webkit-scrollbar-thumb { background: #888; }::-webkit-scrollbar-thumb:hover { background: #555; }::-moz-selection { background-color:white; color: black}::selection {background-color:white;color: black;} body { background-color: #1a1a1f; overflow: hidden; } a { text-decoration: none; color: white; } a:visited { text-decoration: none; } input[type=submit], button { box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3); background-color: #111114; color: white; padding: 16px 32px; text-decoration: none; margin: none; cursor: pointer; border-collapse: collapse; border-width: 1px; border-radius: 8px; border-color: transparent; } input::placeholder{ color: white; } </style><body> <a href="/"> <h1 style="text-align: center;font-size: 3vw;">漢字勉強</h1> </a> <div id="scoreboard" style="text-align:center; font-size:5vw;color:white;"><span id="current_index">1</span>/<span id="total_index"></span></div><div style="text-align: center;"><h2 style="display:inline-block;font-size:15vw; text-align: center; margin-top: 0;margin-bottom: 0;margin-right: 3vw;color:white;" id="kanji">${results_kanji[0].kanji}</h2>  <input type="text" id="textbox" placeholder="音" style="width:13vw;background-color:#111114;color: white; font-size:13vw;margin-left:3vw;"> <p> <button id="execute" style="width:20vw; font-size:7vw;">堤出</button></p> <form method="post" action="/result"> <input type="hidden" name="section" value="${post.section}"> <input id ="move" style="width:20vw; font-size:7vw; opacity:0;margin:10vh" type="submit" value="移動"> </form> </div> <div class="getScript"></div> <script> $('#total_index').text(item_total);function ajaxSend() { $.ajax({ url: "https://review-kanji.herokuapp.com/score_process", data: { answer: $('#textbox').val(), kanji: $('#kanji').text(), }, type: "POST", success: function (result) { $(".getScript").html(result); $('#kanji').text(kanji_table[index]);$('#current_index').text(index+1); $('#textbox').val(''); if(index==item_total){ $('#execute').fadeOut(); $('#textbox').fadeOut();  $('#scoreboard').fadeOut(); $('#kanji').fadeOut(); $('#move').css('opacity','1'); } } });} $('#execute').click(function () { ajaxSend(); }); $(document).keypress(function(event){ var keycode = (event.keyCode ? event.keyCode : event.which); if(keycode == '13'){ ajaxSend(); } }); </script></body></html>`;
           }
         });
         response.end(html);
@@ -153,15 +132,15 @@ var app = http.createServer(function (request, response) {
     request.on('end', function () {
       var post = qs.parse(body);
       db.query(`SELECT * FROM kanji WHERE section="${post.section}";`, function (error_result, result, fields2) {
-        var html = `<!DOCTYPE html> <html> <head> <title>RESULT: TEST-${post.section}</title> </head><body> <h1 style="text-align: center;">RESULT: TEST-${post.section}</h1> <a href="/"><h1 style="text-align: center;">歸還</h1></a>`;
+        var html = `<!DOCTYPE html> <html> <head> <title>RESULT: TEST-${post.section}</title><style> .slideUp { animation-name: slideUp; -webkit-animation-name: slideUp; animation-duration: 1s; -webkit-animation-duration: 1s; visibility: visible !important; } @keyframes slideUp { 0% { opacity: 0; -webkit-transform: translateY(70%); } 100% { opacity: 1; -webkit-transform: translateY(0%); } } @-webkit-keyframes slideUp { 0% { opacity: 0; -webkit-transform: translateY(70%); } 100% { opacity: 1; -webkit-transform: translateY(0%); } } ::-webkit-scrollbar { width: 2vw; } ::-webkit-scrollbar-track { background: white; } ::-webkit-scrollbar-thumb { background: #888; } ::-webkit-scrollbar-thumb:hover { background: #555; } ::-moz-selection { background-color: white; color: black } ::selection { background-color: white; color: black; } body { background-color: #1a1a1f; } a { text-decoration: none; color: white; } a:visited { text-decoration: none; } input[type=submit], button { box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3); background-color: #111114; color: white; padding: 16px 32px; text-decoration: none; margin: none; cursor: pointer; border-collapse: collapse; border-width: 1px; border-radius: 8px; border-color: transparent; } input::placeholder { color: white; } </style><script>window.onscroll = function () { scrollAnimation() };function scrollAnimation() { window.onscroll = function (ev) { if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) { document.getElementById('scrollUp').className = "slideUp"; } }; }</script></head><body> <div id="top"> <h1 style="text-align:center;font-size:3vw;"><a href="/" style="color: white">漢字勉強</a></h1> <h2 style="text-align: center;">RESULT: TEST-${post.section}</h2>`;
         if (error_result) {
           console.log("error occured");
         }
-        html += `<table style="width:10vw;font-size:10vw;margin:auto;"> <tr style="background-color:darkgray"> <th>字</th> <th>音</th> <th><nobr>結果</th> </tr>`
+        html += `<table id="result_table" style="color:white;border-width: 1px;border-radius: 8px;border-collapse: collapse;width:50vw;box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);font-size:5vw;margin:auto;text-align: center;"> <tr style="background-color:#111114;"> <th>字</th> <th>音</th> <th><nobr>結果</th> </tr>`
         var count_O = 0;
         var count_tot = 0;
         result.forEach(function (item) {
-          html += `<tr><th>${item.kanji}</th><th>${item.oto}</th><th>${item.result == 0 ? "X" : "O"}</th></tr>`
+          html += `<tr><th>${item.kanji}</th><th>${item.oto}</th><th ${item.result != 0 ? `style="color:violet"` : `style="color:#3700b3"`}>${item.result == 0 ? "X" : "O"}</th></tr>`
           if (item.result == 1) { count_O++; }
           count_tot++;
         })
@@ -169,7 +148,7 @@ var app = http.createServer(function (request, response) {
           if (error_result_2) {
             console.log("error_result_2 has an error");
           }
-          html += `</table><p style="font-size:20vw; text-align:center">${count_O}/${count_tot}</p></body></html>`
+          html += `</table></div><h2 style="text-align: center;color: white;text-align: center;font-size: 7vw;">Your Result</h2><div id="scrollUp" style="visibility: hidden;"><p style="font-size:17vw; text-align:center; margin:5vh 0 5vh 0;color:white">${count_O}/${count_tot}</p><div style="margin:auto;text-align:center; margin-bottom: 5vh;"><input type="submit" style="text-align:center;font-size:4vw;" onclick="location.href='/'" value="歸還"></div></div></body></html>`
           response.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
           response.end(html);
         });
@@ -191,7 +170,7 @@ var app = http.createServer(function (request, response) {
         html += `${index++} : "${item.kanji}"`
         if (index != kanji_count) { html += `,` }
         else {
-          html += `}</script> <script src="https://code.jquery.com/jquery-3.5.1.min.js"integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script><body> <a href="/"> <h1 style="text-align: center;">漢字勉強</h1> </a> <h2 style="font-size:20vw; text-align: center;" id="kanji">${results_kanji[0].kanji}</h2> <div style="text-align: center;"> <input type="text" id="textbox" placeholder="音" style="width:15vw; font-size:15vw;"> <p> <button id="execute" style="width:30vw; font-size:10vw;">堤出</button></p>  </div> <div class="getScript"></div> <script> function ajaxSend() { $.ajax({ url: "http://review-kanji.herokuapp.com/score_process", data: { answer: $('#textbox').val(), kanji: $('#kanji').text(), }, type: "POST", success: function (result) { $(".getScript").html(result); $('#kanji').text(kanji_table[index]); $('#textbox').val(''); if(index==item_total){ $('#execute').fadeOut(); $('#textbox').fadeOut(); $('#kanji').fadeOut(); $('#move').css('opacity','1'); } } });} $('#execute').click(function () { ajaxSend(); }); $(document).keypress(function(event){ var keycode = (event.keyCode ? event.keyCode : event.which); if(keycode == '13'){ ajaxSend(); } }); </script></body></html>`;
+          html += `}</script> <script src="https://code.jquery.com/jquery-3.5.1.min.js"integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script><style> ::-webkit-scrollbar { width: 2vw;}::-webkit-scrollbar-track { background: white; } ::-webkit-scrollbar-thumb { background: #888; }::-webkit-scrollbar-thumb:hover { background: #555; }::-moz-selection { background-color:white; color: black}::selection {background-color:white;color: black;} body { background-color: #1a1a1f; overflow: hidden; } a { text-decoration: none; color: white; } a:visited { text-decoration: none; } input[type=submit], button { box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3); background-color: #111114; color: white; padding: 16px 32px; text-decoration: none; margin: none; cursor: pointer; border-collapse: collapse; border-width: 1px; border-radius: 8px; border-color: transparent; } input::placeholder{ color: white; } </style><body> <a href="/"> <h1 style="text-align: center;font-size: 3vw;">漢字勉強</h1> </a> <div id="scoreboard" style="text-align:center; font-size:5vw;color:white;"><span id="current_index">1</span>/<span id="total_index"></span></div><div style="text-align: center;"><h2 style="display:inline-block;font-size:15vw; text-align: center; margin-top: 0;margin-bottom: 0;margin-right: 3vw;color:white;" id="kanji">${results_kanji[0].kanji}</h2>  <input type="text" id="textbox" placeholder="音" style="width:13vw;background-color:#111114;color: white; font-size:13vw;margin-left:3vw;"> <p> <button id="execute" style="width:20vw; font-size:7vw;">堤出</button></p>  </div><div class="getScript"></div> <script> $('#total_index').text(item_total);function ajaxSend() { $.ajax({ url: "https://review-kanji.herokuapp.com/score_process", data: { answer: $('#textbox').val(), kanji: $('#kanji').text(), }, type: "POST", success: function (result) { $(".getScript").html(result); $('#kanji').text(kanji_table[index]);$('#current_index').text(index+1); $('#textbox').val(''); if(index==item_total){ $('#execute').fadeOut(); $('#textbox').fadeOut();  $('#scoreboard').fadeOut(); $('#kanji').fadeOut(); $('#move').css('opacity','1'); } } });} $('#execute').click(function () { ajaxSend(); }); $(document).keypress(function(event){ var keycode = (event.keyCode ? event.keyCode : event.which); if(keycode == '13'){ ajaxSend(); } }); </script></body></html>`;
         }
       });
       response.end(html);
@@ -235,13 +214,19 @@ var app = http.createServer(function (request, response) {
       });
     });
   } else if (pathname === '/get') {
-    getKanji.getKanji(function (text, nextSection) {
-      console.log(text);
-      response.writeHead(302, {
-        'Location': nextSection
-      });
-      response.end();
-    });
+    response.write(`<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>漢子勉强 - GET</title> <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script> <style> input[type=submit] { box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3); background-color: #111114; color: white; padding: 16px 32px; text-decoration: none; margin: none; cursor: pointer; border-collapse: collapse; border-width: 1px; border-radius: 8px; border-color: transparent; } ::-moz-selection { background-color:white; color: black}::selection {background-color:white;color: black;}::-webkit-scrollbar { width: 2vw;}::-webkit-scrollbar-track { background: white; } ::-webkit-scrollbar-thumb { background: #888; }::-webkit-scrollbar-thumb:hover { background: #555; } body { background-color: #1a1a1f; }</style> </head> <body> <div id="console" style="box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);overflow:hidden;width:70vw;height:70vh;margin:auto;text-align:center;background-color: black;color: white;font-size:2vw;"> [Updating Kanji Database]<br> </div> <!-- <button onclick="$('p').append('text<br>');">hi</button> --> </body> </html>`);
+    getKanji.getKanji(
+      function (text) {
+        response.write(`<script>$('#console').append('${text}<br>');$('#console').scrollTop($('#console').prop('scrollHeight'))</script>`);
+      },
+      function (text) {
+        response.end(`<script>$('#console').append('${text}<br>');$('#console').scrollTop($('#console').prop('scrollHeight'));</script><div style="margin:auto;text-align:center"><input type="submit" style="text-align:center;font-size:4vw;"onclick="location.href='/'" value="歸還" ></div>`);
+      }
+    );
+    // response.writeHead(302, {
+    //   'Location': "/"
+    // });
+    // response.end();
   }
   else {
     response.writeHead(404);

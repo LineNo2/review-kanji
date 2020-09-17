@@ -4,7 +4,8 @@ const { naver_id, naver_pw } = require('./lib/config');
 var db = require('./lib/db.js');
 
 module.exports = {
-    getKanji: async function (callback, nextSection) {
+    getKanji: async function (callback_write, callback_end) {
+        callback_write('opening browser..');
         const browser = await puppeteer.launch({
             headless: true,
             args: ["--no-sandbox"]
@@ -12,7 +13,7 @@ module.exports = {
         const page = await browser.newPage();
 
         await page.goto('https://learn.dict.naver.com/m/jpdic/wordbook/my/words.nhn?wordbookCode=261159209&filterType=0&orderType=2&pageNo=1');
-
+        callback_write('login to naver dictionary..');
         await page.evaluate((id, pw) => {
             document.querySelector('#id').value = id;
             document.querySelector('#pw').value = pw;
@@ -23,7 +24,7 @@ module.exports = {
 
         const currentURL = "https://learn.dict.naver.com/m/jpdic/wordbook/my/words.nhn?wordbookCode=261159209";
         const nextpageARGS = "&filterType=0&orderType=2&pageNo=";
-
+        callback_write('moving to kanji dictionaty..');
         await page.goto(currentURL + nextpageARGS + "1");
 
         var oto, kanji;
@@ -35,36 +36,33 @@ module.exports = {
         var total_page_html = $(".u_pg2_total").text();
         var total_page = total_page_html.split(' ')[1];
         var page_html = new Array(total_page);
-        var datetime = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}`;
+        var datetime = `${d.getFullYear()}-${(d.getMonth() + 1) < 10 ? "0" + (d.getMonth() + 1) : d.getMonth() + 1}-${d.getDate()} ${d.getHours()}`;
         var section_max;
         var last_kanji, first_kanji;
         var sync = 0;
         var responseText;
         kanjiDict = {};
 
-        total_page = 5;
+        // total_page = 5;
 
         for (var i = 1; i <= total_page; i++) {
-            console.log(i + "th page saving..");
+            console.log("saving page no."+i+"...");
+            callback_write("saving page no."+i+"...");
             await page.goto(currentURL + nextpageARGS + i);
             page_html[i] = await page.content();
         }
 
-        console.log("let's close the browser..");
         await browser.close();
-        console.log("browser closed");
 
         function getKanjiOto(callback) {
             for (var i = 1; i <= total_page; i++) {
                 $ = cheerio.load(page_html[i]);
                 oto = $(".kr_read");
                 kanji = $(".tit_ent.jp");
-                console.log("hi");
                 kanji.each(function (j, elem) {
                     kanjiDict[$(this).text().trim()] = oto[j].children[0].data.trim();
                 });
             }
-            console.log("gotocallback");
             callback();
         };
 
@@ -90,6 +88,7 @@ module.exports = {
                         console.log("There are no inforamtion about section MAX");
                     }
                     section_max = result_max[0]['MAX(section)'];
+                    callback_write('your database has '+section_max+' sections');
                     console.log(section_max);
                     resolve_2();
                 });
@@ -100,10 +99,12 @@ module.exports = {
                     if (error_last_kanji) {
                         console.log("There are no inforamtion about section MAX");
                     }
+                    console.log(result_last_kanji, section_max);
                     last_kanji = result_last_kanji[0]['last_kanji'];
                     if (last_kanji == undefined) {
                         console.log("DB 관리자가 일을 똑바로 안했습니다!");
                     }
+                    callback_write('the latest kanji is : '+last_kanji);
                     console.log(last_kanji);
                     resolve_3();
                 });
@@ -121,25 +122,27 @@ module.exports = {
                                 if (error_insert) {
                                     console.log("삽입 과정에서 에러가 발생!");
                                     responseText = "an error occured during kanji inserting process!";
-                                    callback(responseText, "/");
+                                    callback_end(`<p style="color:red">${responseText}</p>`);
                                 }
                                 console.log(sql);
                                 db.query(sql2, function (error_section_insert) {
                                     if (error_section_insert) {
                                         console.log("섹션 삽입에서 에러 발생!");
                                         responseText = "an error occured during section inserting process!";
-                                        callback(responseText, "/");
                                     }
-                                    responseText = "successfully done! new section:" + section_max + 1 + "has been added";
-                                    callback(responseText, `?id=${section_max + 1}`);
+                                    responseText = "successfully done! new section : " + (section_max + 1) + " has been added";
+                                    console.log(responseText);
+                                    callback_end(`<p style="color:green">${responseText}</p>`);
                                 });
                                 console.log(sql2);
                             });
                         }
                         else {
                             responseText = "There are no new kanji to add!";
-                            callback(responseText, "/");
+                            console.log(responseText);
+                            callback_end(`<p style="color:red">${responseText}</p>`);
                         }
+                        break;
                     }
                     else {
                         if (sync == 0) {
@@ -148,9 +151,9 @@ module.exports = {
                             else
                                 first_kanji = key;
                             sql += `("${key}","${kanjiDict[key]}",${section_max + 1},"${datetime}")`;
+                            callback_write(`{${key} : ${kanjiDict[key]}} 을(를) ${section_max + 1}번째 섹션에 ${datetime}시에 저장 완료했습니다.`);
                             total++;
                         }
-
                     }
                 }
             })
