@@ -3,3 +3,5 @@ package-lock.json
 /example
 test.html
 test2.html
+/lib/db.js
+/lib/config.json
