@@ -6,6 +6,7 @@ var template = require('./lib/template.js');
 var db = require('./lib/db.js');
 var getKanji = require('./getKanjiFromNaver.js');
 
+setInterval(function () { db.query('SELECT 1'); }, 5000);
 
 var app = http.createServer(function (request, response) {
   var _url = request.url;
