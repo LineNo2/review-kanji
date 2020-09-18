@@ -222,6 +222,9 @@ var app = http.createServer(function (request, response) {
       },
       function (text) {
         response.end(`<script>$('#console').append('${text}<br>');$('#console').scrollTop($('#console').prop('scrollHeight'));</script><div style="margin:auto;text-align:center"><input type="submit" style="text-align:center;font-size:4vw;"onclick="location.href='/'" value="歸還" ></div>`);
+      },
+      function(text){
+        response.write(text);
       }
     );
     // response.writeHead(302, {

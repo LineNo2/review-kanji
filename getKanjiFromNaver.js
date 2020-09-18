@@ -4,7 +4,7 @@ const { naver_id, naver_pw } = require('./lib/config');
 var db = require('./lib/db.js');
 
 module.exports = {
-    getKanji: async function (callback_write, callback_end) {
+    getKanji: async function (callback_write, callback_end, callback_console) {
         callback_write('opening browser..');
         const browser = await puppeteer.launch({
             headless: true,
@@ -46,8 +46,8 @@ module.exports = {
         // total_page = 5;
 
         for (var i = 1; i <= total_page; i++) {
-            console.log("saving page no."+i+"...");
-            callback_write("saving page no."+i+"...");
+            console.log("saving page no." + i + "...");
+            callback_write("saving page no." + i + "...");
             await page.goto(currentURL + nextpageARGS + i);
             page_html[i] = await page.content();
         }
@@ -88,7 +88,7 @@ module.exports = {
                         console.log("There are no inforamtion about section MAX");
                     }
                     section_max = result_max[0]['MAX(section)'];
-                    callback_write('your database has '+section_max+' sections');
+                    callback_write('your database has ' + section_max + ' sections');
                     console.log(section_max);
                     resolve_2();
                 });
@@ -104,7 +104,7 @@ module.exports = {
                     if (last_kanji == undefined) {
                         console.log("DB 관리자가 일을 똑바로 안했습니다!");
                     }
-                    callback_write('the latest kanji is : '+last_kanji);
+                    callback_write('the latest kanji is : ' + last_kanji);
                     console.log(last_kanji);
                     resolve_3();
                 });
@@ -130,17 +130,21 @@ module.exports = {
                                         console.log("섹션 삽입에서 에러 발생!");
                                         responseText = "an error occured during section inserting process!";
                                     }
-                                    responseText = "successfully done! new section : " + (section_max + 1) + " has been added";
+                                    responseText = "successfully done! new section : " + (section_max + 1) + " with total : " + total + " kanjis has been added";
                                     console.log(responseText);
+                                    callback_console(`<script>$('#console').attr({'style':'box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);overflow:scroll;overflow-x: hidden;width:70vw;height:70vh;margin:auto;text-align:center;background-color: black;color: white;font-size:2vw;'})</script>`)
                                     callback_end(`<p style="color:green">${responseText}</p>`);
                                 });
                                 console.log(sql2);
                             });
                         }
                         else {
-                            responseText = "There are no new kanji to add!";
-                            console.log(responseText);
-                            callback_end(`<p style="color:red">${responseText}</p>`);
+                            if (total == 0) {
+                                responseText = "There are no new kanji to add!";
+                                console.log(responseText);
+                                callback_console(`<script>$('#console').attr({'style':'box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);overflow:scroll;overflow-x: hidden;width:70vw;height:70vh;margin:auto;text-align:center;background-color: black;color: white;font-size:2vw;'})</script>`)
+                                callback_end(`<p style="color:red">${responseText}</p>`);
+                            }
                         }
                         break;
                     }
