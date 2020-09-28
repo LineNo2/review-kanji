@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <style>
+        body {
+            background-color: #1a1a1f;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+        }
+
+        a:visited {
+            color: white;
+            text-decoration: none;
+        }
+
+        .dark_button {
+            box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);
+            background-color: #111114;
+            color: white;
+            padding: 16px 32px;
+            text-decoration: none;
+            margin: none;
+            cursor: pointer;
+            border-collapse: collapse;
+            border-width: 1px;
+            border-radius: 8px;
+            border-color: transparent;
+            font-size: 20vw;
+        }
+
+        #title {
+            text-align: center;
+            font-size: 20vw;
+        }
+
+        #body {
+            text-align: center;
+            font-size: 3vh;
+            margin-top: 40vh;
+        }
+
+        @media (min-width: 768px) {
+            #title {
+                font-size: 7vw;
+            }
+
+            #body {
+                margin-top: 40vh;
+                font-size: 3vw;
+            }
+
+            .dark_button {
+                font-size: 3vw;
+            }
+        }
+
+        @media (min-width: 1023px) {
+            #title {
+                font-size: 10vw;
+            }
+
+            #body {
+                margin-top: 20vh;
+                font-size: 5vw;
+            }
+
+            .dark_button {
+                font-size: 5vw;
+            }
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>漢字勉強 - NOT FOUND</title>
+</head>
+
+<body>
+    <a href="/">
+        <h1 id="title" style="margin-top:0">漢字勉強</h1>
+    </a>
+    <div id="body">
+        <p style="font-size: 3vh; color:white;">Wrong Address</p>
+    </div>
+    <div style="text-align: center;"><input type="submit" class="dark_button" onclick="location.href='/'" value="歸還">
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,165 @@
+}</script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<style>
+    ::-webkit-scrollbar {
+        width: 2vw;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: white;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    ::-moz-selection {
+        background-color: white;
+        color: black
+    }
+
+    ::selection {
+        background-color: white;
+        color: black;
+    }
+
+    body {
+        background-color: #1a1a1f;
+        overflow: hidden;
+    }
+
+    a {
+        text-decoration: none;
+        color: white;
+    }
+
+    a:visited {
+        text-decoration: none;
+    }
+
+    input[type=submit],
+    button {
+        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);
+        background-color: #111114;
+        color: white;
+        padding: 16px 32px;
+        text-decoration: none;
+        margin: none;
+        cursor: pointer;
+        border-collapse: collapse;
+        border-width: 1px;
+        border-radius: 8px;
+        border-color: transparent;
+        width: 50vw;
+        font-size: 15vw;
+    }
+
+    input::placeholder {
+        color: white;
+    }
+
+    #title {
+        text-align: center;
+        font-size: 7vh;
+    }
+
+    #scoreboard {
+        text-align: center;
+        font-size: 5vh;
+        color: white;
+    }
+
+    #kanji {
+        display: block;
+        font-size: 10vh;
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 5vh;
+        color: white;
+    }
+
+    #textbox {
+        width: 11vh;
+        background-color: #111114;
+        color: white;
+        font-size: 11vh;
+        margin-bottom: 5vh;
+    }
+
+    @media (min-width: 768px) {
+        #title {
+            font-size: 5vw;
+        }
+
+        #scoreboard {
+            font-size: 4vw;
+        }
+
+        #kanji {
+            display: inline-block;
+            font-size: 15vw;
+            margin-right: 3vw;
+        }
+
+        #textbox {
+            margin-left: 3vw;
+            font-size: 13vw;
+            width: 13vw;
+        }
+
+        input[type=submit],
+        button {
+            width: 20vw;
+            font-size: 7vw;
+        }
+    }
+
+    @media (min-width: 1023px) {
+        #title {
+            font-size: 4vw;
+        }
+
+        #scoreboard {
+            font-size: 3vw;
+        }
+
+        #kanji {
+            display: inline-block;
+            font-size: 15vw;
+            margin-right: 3vw;
+        }
+
+        #textbox {
+            margin-left: 3vw;
+            font-size: 13vw;
+            width: 13vw;
+        }
+
+        input[type=submit],
+        button {
+            width: 20vw;
+            font-size: 7vw;
+        }
+    }
+</style>
+
+<body> <a href="/">
+        <h1 id="title" style="margin-top:0">漢字勉強</h1>
+    </a>
+    <div id="scoreboard"><span id="current_index">1</span>/<span id="total_index"></span></div>
+    <div style="text-align: center;">
+        <h2 id="kanji">${results_kanji[0].kanji}</h2> <input type="text" id="textbox" placeholder="音" maxlength="1">
+        <p> <button id="execute">
+                <nobr>堤出</nobr>
+            </button></p>
+    </div>
+    <div class="getScript"></div>
+    <script> $('#total_index').text(item_total); function ajaxSend() { $.ajax({ url: "https://review-kanji.herokuapp.com/score_process", data: { answer: $('#textbox').val(), kanji: $('#kanji').text(), }, type: "POST", success: function (result) { $(".getScript").html(result); $('#kanji').text(kanji_table[index]); $('#current_index').text((index == item_total) ? index : (index + 1)); $('#textbox').val(''); if (index == item_total) { $('#execute').fadeOut(); $('#textbox').fadeOut(); $('#scoreboard').fadeOut(); $('#kanji').fadeOut(); $('#move').css('opacity', '1'); } } }); } $('#execute').click(function () { ajaxSend(); }); $(document).keypress(function (event) { var keycode = (event.keyCode ? event.keyCode : event.which); if (keycode == '13') { ajaxSend(); } }); </script>
+</body>
+
+</html>

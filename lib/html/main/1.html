@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+        function showAnswer(id) {
+            if (document.getElementById(id).style.opacity == "1") {
+                document.getElementById(id).style.opacity = 0;
+            } else {
+                document.getElementById(id).style.opacity = 1;
+            }
+        }
+    </script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    </script>
+    <script type="text/javascript">
+        google.charts.load('current', { packages: ['corechart', 'bar'] });
+        google.charts.setOnLoadCallback(drawStacked);
+
+        function drawStacked() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', '部分');
+            data.addColumn('number', '正答');
+            data.addColumn('number', '誤答');
+
+            data.addRows([
+                ${ chart }
+            ]);
+
+            var options = {
+                title: '暗記現況',
+                isStacked: true,
+                backgroundColor: '#1a1a1f',
+                legendTextStyle: { color: 'white' },
+                titleTextStyle: { color: 'white' },
+                hAxis: {
+                    textStyle: { color: 'white' }
+                },
+                vAxis: {
+                    ticks: [0, 30, 40, 45, 50, 55],
+                    textStyle: { color: 'white' }
+                },
+                colors: ['#3700b3', '#BB86FC']
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('test_result'));
+            chart.draw(data, options);
+        }
+    </script>
+    <style>
+        body {
+            background-color: #1a1a1f;
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
+        }
+
+        a:visited {
+            color: rgb(48, 48, 51);
+            text-decoration: none;
+        }
+
+        #totalboard {
+            margin: auto;
+            text-align: center;
+            margin-top: 5vh;
+            margin-bottom: 5vh;
+            padding-top: 1vh;
+            padding-bottom: 1vh;
+            width: 30vw;
+            border-radius: 8px;
+            background-color: #111114;
+            font-size: 3vw;
+            color: white;
+        }
+
+        .dark_button {
+            box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);
+            background-color: #111114;
+            color: white;
+            padding: 16px 32px;
+            text-decoration: none;
+            margin: none;
+            cursor: pointer;
+            border-collapse: collapse;
+            border-width: 1px;
+            border-radius: 8px;
+            border-color: transparent;
+        }
+
+        .dark_date {
+            color: #787878;
+            white-space: nowrap;
+        }
+
+        .dark_table {
+            width: 80vw;
+            box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);
+            font-size: 5vw;
+            margin: auto;
+            text-align: center;
+            border-width: 1px;
+            border-radius: 8px;
+            border-collapse: collapse;
+        }
+
+        #dark_top_button {
+            border-radius: 50%;
+            position: fixed;
+            right: 5vw;
+            bottom: 10vh;
+            background-color: #111114;
+            color: white;
+            height: 10vw;
+            width: 10vw;
+            font-size: 3vw;
+            box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+            border-width: 1;
+        }
+
+
+
+        #table_${title}>a,
+        /*정보: 이거 틀린게 아니라 literal string임*/
+        a:hover,
+        .dark_button:hover {
+            animation: color-change 1.5s infinite;
+        }
+
+        @keyframes color-change {
+            0% {
+                color: white;
+            }
+
+            50% {
+                color: #1a1a1f;
+            }
+
+            100% {
+                color: white;
+            }
+        }
+
+        @keyframes opacity-on {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .hovering {
+            text-align: center;
+            cursor: pointer;
+            font-size: 3vw;
+        }
+
+        .visible {
+            display: inline-block;
+            animation: opacity-on 1s;
+        }
+
+        .unvisible {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .dark_table {
+                width: 60vw;
+            }
+
+            #dark_title {
+                font-size: 15vw;
+            }
+        }
+
+        @media (min-width: 1023px) {
+            .dark_table {
+                width: 50vw;
+            }
+
+            #dark_title {
+                font-size: 10vw;
+            }
+        }
+
+
+
+        ::-moz-selection {
+            background-color: white;
+            color: black
+        }
+
+        ::selection {
+            background-color: white;
+            color: black;
+        }
+
+        ::-webkit-scrollbar {
+            width: 2vw;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: white;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>window.onscroll = function () { TopButton() }; function TopButton() { window.onscroll = function (ev) { if (window.scrollY > 10) { document.getElementById('dark_top_button').className = "visible"; } else { document.getElementById('dark_top_button').className = "unvisible"; } }; }</script>
+
+
+    <title>漢字勉強 - ${title}</title>
+</head>
+
+<body>
+    <button id="dark_top_button" class="unvisible" onclick="window.scroll({top: 0,behavior: 'smooth'});;">TOP</button>
+    ${table}
+    ${body}
+    <div style="text-align:center;margin:3vh 2vw 3vh 2vw;"><a href="/update"><input class="dark_button"
+                style="font-size:4vw;margin-right:3vw ;" type="submit" value="更新"></a><a href="/get"><input
+                type="submit" class="dark_button" value="收集" style="font-size:4vw;margin-left:3vw ;"></a></div>
+    <div id="test_result" style="text-align:center;margin:auto; width: 80vw; height: 50vh"></div>
+</body>
