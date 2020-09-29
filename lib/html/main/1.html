@@ -220,7 +220,7 @@
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>window.onscroll = function () { TopButton() }; function TopButton() { window.onscroll = function (ev) { if (window.scrollY > 10) { document.getElementById('dark_top_button').className = "visible"; } else { document.getElementById('dark_top_button').className = "unvisible"; } }; }</script>
-
+    <script>function resetCheck() { if(confirm('이 작업은 되돌릴 수 없습니다. 계속 하시겠습니까?'))location.href='/?id=${title}';}</script>
 
     <title>漢字勉強 - ${title}</title>
 </head>

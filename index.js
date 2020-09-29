@@ -136,6 +136,10 @@ var app = http.createServer(function (request, response) {
     });
     request.on('end', function () {
       var post = qs.parse(body);
+      if (post.section === undefined) {
+        response.writeHead(404);
+        response.end(fs.readFileSync('./lib/html/notfound/1.html', 'utf8'));
+      }
       db.query(`SELECT * FROM kanji WHERE section="${post.section}";`, function (error_result, result, fields2) {
         var html = eval('`' + fs.readFileSync(`./lib/html/result/1.html`, 'utf8') + '`');
         if (error_result) {
@@ -231,6 +235,22 @@ var app = http.createServer(function (request, response) {
         response.write(text);
       }
     );
+  }
+  else if (pathname === '/reset') {
+    response.writeHead(302, {
+      'Location': `/?id=${queryData.id}`
+    });
+    response.end();
+    db.query(`UPDATE section_information SET memorized = 0 WHERE id = ${queryData.id};`, function (error_reset) {
+      if (error_reset) {
+        console.log("error_reset");
+      }
+      db.query(`UPDATE kanji SET result = 0 WHERE section=${queryData.id}`), function (error_reset_2) {
+        if (error_reset_2) {
+          console.log("error_reset_2");
+        }
+      }
+    });
   }
   else {
     response.writeHead(404);
