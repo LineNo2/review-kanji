@@ -1,11 +1,15 @@
 var http = require('http');
 var url = require('url');
 var qs = require('querystring');
-
-var template = require('./lib/js/template.js');
-var db = require('./lib/js/db.js');
-var getKanji = require('./lib/js/getKanjiFromNaver.js');
 var fs = require('fs');
+
+var printMain = require('./lib/js/printMainPage.js');
+var printError = require('./lib/js/printErrorPage.js');
+var getKanji = require('./lib/js/getKanjiFromNaver.js');
+const { pwcode } = require('./lib/config/delete_config.json')
+var db = require('./lib/js/db.js');
+const { contains } = require('cheerio');
+
 
 setInterval(function () { db.query('SELECT 1'); }, 5000);
 
@@ -31,7 +35,7 @@ var app = http.createServer(function (request, response) {
       }
       // memorized_kanji += result_section[i]['memorized'];
       console.log(result_date);
-      var list = template.list(section_number, result_date);
+      var list = printMain.list(section_number, result_date);
       var chart = '';
       var count = 0;
       result_section.forEach(function (item) {
@@ -41,7 +45,7 @@ var app = http.createServer(function (request, response) {
       });
       if (queryData.id === undefined) {
         var title = '';
-        var HTML = template.HTML(title, list, `<div id="totalboard">${memorized_kanji}/${total_kanji}</div>`, chart);
+        var HTML = printMain.HTML(title, list, `<div id="totalboard">${memorized_kanji}/${total_kanji}</div>`, chart);
         response.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
         response.end(HTML);
       } else {
@@ -51,8 +55,8 @@ var app = http.createServer(function (request, response) {
           if (error_2) {
             console.log(error_2);
           }
-          var kanji_table = template.kanji_table(results_kanji, title);
-          var HTML = template.HTML(title, list, kanji_table, chart);
+          var kanji_table = printMain.kanji_table(results_kanji, title);
+          var HTML = printMain.HTML(title, list, kanji_table, chart);
           response.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
           response.end(HTML);
         });
@@ -225,11 +229,12 @@ var app = http.createServer(function (request, response) {
   } else if (pathname === '/get') {
     response.write(eval('`' + fs.readFileSync(`./lib/html/get/1.html`, 'utf8') + '`'));
     getKanji.getKanji(
-      function (text) {
-        response.write(`<script>$('#console').append('${text}<br>');$('#console').scrollTop($('#console').prop('scrollHeight'))</script>`);
+      queryData.fastmode,
+      function (text, percent) {
+        response.write(`<script>$('#console').append('${text}<br>');$('#console').scrollTop($('#console').prop('scrollHeight'));moveProgressbar(${percent});</script>`);
       },
       function (text) {
-        response.end(`<script>$('#console').append('${text}<br>');$('#console').scrollTop($('#console').prop('scrollHeight'));</script><div style="margin:auto;text-align:center"><input type="submit" class="dark_button" style="text-align:center;font-size:4vw;width:50vw;margin-top:5vh;"onclick="location.href='/'" value="歸還" ></div>`);
+        response.end(`<script>$('#console').append('${text}<br>');$('#console').scrollTop($('#console').prop('scrollHeight'));moveProgressbar(100);</script><div style="margin:auto;text-align:center"><input type="submit" class="dark_button" style="text-align:center;font-size:4vw;width:50vw;margin-top:5vh;"onclick="location.href='/'" value="歸還" ></div>`);
       },
       function (text) {
         response.write(text);
@@ -252,9 +257,32 @@ var app = http.createServer(function (request, response) {
       }
     });
   }
+  else if (pathname === '/delete') {
+    if (queryData.pwcode == pwcode) {
+      db.query(`DELETE FROM kanji WHERE section=${queryData.id}`, function (error_kanji_delete) {
+        if (error_kanji_delete) {
+          console.log('error_kanji_delete');
+        }
+        db.query(`DELETE FROM section_information WHERE id=${queryData.id}`, function (error_section_delete) {
+          if (error_section_delete) {
+            console.log('error_section_delete');
+          }
+          response.writeHead(302, {
+            'Location': `/`
+          });
+          response.end();
+        })
+      })
+    }
+    else {
+      response.writeHead(403);
+      response.end(printError.HTML('403', 'Forbidden'));
+    }
+
+  }
   else {
     response.writeHead(404);
-    response.end(fs.readFileSync('./lib/html/notfound/1.html', 'utf8'));
+    response.end(printError.HTML('404', 'NOT FOUND'));
   }
 });
 

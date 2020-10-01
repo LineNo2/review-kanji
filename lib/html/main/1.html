@@ -24,9 +24,7 @@
             data.addColumn('number', '正答');
             data.addColumn('number', '誤答');
 
-            data.addRows([
-                ${ chart }
-            ]);
+            data.addRows([${chart}]);
 
             var options = {
                 title: '暗記現況',
@@ -188,6 +186,12 @@
             font-size:4vw;
             width:35vw;
         }
+        #delete_button{
+            font-size: 4vw;
+            width:80vw;
+            margin-top:3vh;
+            background-color:#ff2424;
+        }
 
         @media (min-width: 768px) {
             .dark_table {
@@ -211,6 +215,10 @@
             #update_button{
                 width: 25vw;
             }
+            #delete_button{ 
+                width:60vw;
+            }
+
         }
 
         @media (min-width: 1023px) {
@@ -233,6 +241,9 @@
 
             #update_button {
                 width: 20vw;
+            }
+            #delete_button{ 
+                width:50vw;
             }
         }
 
@@ -266,7 +277,9 @@
     </style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>window.onscroll = function () { TopButton() }; function TopButton() { window.onscroll = function (ev) { if (window.scrollY > 10) { document.getElementById('dark_top_button').className = "visible"; } else { document.getElementById('dark_top_button').className = "unvisible"; } }; }</script>
-    <script>function resetCheck() { if (confirm('이 작업은 되돌릴 수 없습니다. 계속 하시겠습니까?')) location.href = '/?id=${title}'; }</script>
+    <script>function resetCheck() { if (confirm('이 작업은 되돌릴 수 없습니다. 계속 하시겠습니까?')) location.href = '/reset?id=${title}'; }</script>
+    <script>function deleteCheck() { location.href = '/delete?id=${title}&pwcode='+prompt('管理者 秘密番號 入力','秘密番號'); }</script>
+    <script>function getCheck() {location.href = '/get?fastmode='+confirm("收集 with FASTMODE?");} </script>
 
     <title>漢字勉強 - ${title}</title>
 </head>
@@ -275,8 +288,10 @@
     <button id="dark_top_button" class="unvisible" onclick="window.scroll({top: 0,behavior: 'smooth'});;">TOP</button>
     ${table}
     ${body}
-    <div style="text-align:center;margin:3vh 2vw 3vh 2vw;"><a href="/update"><input class="dark_button"
-                style="margin-right:10vw;" type="submit" value="更新" id="update_button"></a><a href="/get"><input
-                type="submit" class="dark_button" value="收集" id="get_button"></a></div>
+    <div style="text-align:center;margin:3vh 2vw 3vh 2vw;">
+        <a href="/update">
+            <input class="dark_button" style="margin-right:10vw;" type="submit" value="更新" id="update_button">
+            </a>
+        <input type="submit" class="dark_button" value="收集" id="get_button" onclick="getCheck();">
     <div id="test_result" style="text-align:center;margin:auto; width: 80vw; height: 50vh"></div>
 </body>

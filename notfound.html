@@ -1,76 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>
-        function showAnswer(id) {
-            if (document.getElementById(id).style.opacity == "1") {
-                document.getElementById(id).style.opacity = 0;
-            } else {
-                document.getElementById(id).style.opacity = 1;
-            }
-        }
-    </script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    </script>
-    <script type="text/javascript">
-        google.charts.load('current', { packages: ['corechart', 'bar'] });
-        google.charts.setOnLoadCallback(drawStacked);
-
-        function drawStacked() {
-            var data = new google.visualization.DataTable();
-            data.addColumn('string', '部分');
-            data.addColumn('number', '正答');
-            data.addColumn('number', '誤答');
-
-            data.addRows([
-                ['部分0', 39, 1], ['部分1', 38, 2], ['部分2', 40, 0], ['部分3', 40, 0], ['部分4', 36, 4], ['部分5', 37, 3], ['部分6', 38, 2], ['部分7', 36, 4], ['部分8', 37, 3], ['部分9', 36, 4], ['部分10', 42, 3], ['部分11', 40, 2], ['部分12', 38, 1], ['部分13', 39, 2], ['部分14', 37, 3], ['部分15', 38, 2], ['部分16', 39, 4], ['部分17', 44, 3], ['部分18', 50, 5], ['部分19', 49, 1], ['部分20', 52, 1]
-            ]);
-
-            var options = {
-                title: '暗記現況',
-                isStacked: true,
-                backgroundColor: '#1a1a1f',
-                legendTextStyle: { color: 'white' },
-                titleTextStyle: { color: 'white' },
-                hAxis: {
-                    textStyle: { color: 'white' }
-                },
-                vAxis: {
-                    ticks: [0, 30, 40, 45, 50, 55],
-                    textStyle: { color: 'white' }
-                },
-                colors: ['#3700b3', '#BB86FC']
-            };
-
-            var chart = new google.visualization.ColumnChart(document.getElementById('test_result'));
-            chart.draw(data, options);
-        }
-    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>漢子勉强 - GET</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <style>
-        body {
-            background-color: #1a1a1f;
-        }
-
-
-
-        a {
-            text-decoration: none;
-            color: white;
-        }
-
-        a:visited {
-            color: rgb(48, 48, 51);
-            text-decoration: none;
-        }
-
-        .dark_table {
-            border-width: 1px;
-            border-radius: 8px;
-            border-collapse: collapse;
-        }
-
         .dark_button {
             box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);
             background-color: #111114;
@@ -83,93 +20,6 @@
             border-width: 1px;
             border-radius: 8px;
             border-color: transparent;
-        }
-
-        .dark_date {
-            color: #787878;
-        }
-
-        #table_20>a,
-        a:hover,
-        input[type=submit]:hover {
-            animation: color-change 1.5s infinite;
-        }
-
-        @keyframes color-change {
-            0% {
-                color: white;
-            }
-
-            50% {
-                color: #1a1a1f;
-            }
-
-            100% {
-                color: white;
-            }
-        }
-
-
-        .dark_table {
-            width: 80vw;
-            box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);
-            font-size: 5vw;
-            margin: auto;
-            text-align: center;
-        }
-
-        @media (min-width: 768px) {
-            #section_table {
-                width: 60vw;
-            }
-
-            #kanji_table {
-                width: 60vw;
-            }
-        }
-
-        @media (min-width: 1023px) {
-            #section_table {
-                width: 50vw;
-            }
-
-            #kanji_table {
-                width: 50vw;
-            }
-        }
-
-        #top_button {
-            border-radius: 50%;
-            position: fixed;
-            right: 5vw;
-            bottom: 10vh;
-            background-color: #111114;
-            color: white;
-            height: 10vw;
-            width: 10vw;
-            font-size: 3vw;
-            box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);
-            z-index: 2;
-            border-width: 1;
-        }
-
-        .visible {
-            display: inline-block;
-            animation: opacity-on 1s;
-        }
-
-        .unvisible {
-            display: none;
-        }
-
-        @keyframes opacity-on {
-            0% {
-                opacity: 0;
-            }
-
-            100% {
-                opacity: 1;
-            }
         }
 
         ::-moz-selection {
@@ -197,33 +47,84 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+
+        body {
+            background-color: #1a1a1f;
+        }
+
+        .progressbar_background {
+            margin: auto;
+            width: 70vw;
+            background-color: #ddd;
+        }
+
+        #progressbar {
+            height: 4vh;
+            background: repeating-linear-gradient(45deg,
+                    #606dbc,
+                    #606dbc 10px,
+                    #465298 10px,
+                    #465298 20px);
+            background-size: 150% 100%;
+            animation: move 4s infinite linear forwards;
+        }
+
+        @-webkit-keyframes move {
+            0% {
+                background-position: 0% 0;
+            }
+
+            100% {
+                background-position: 100% 0;
+            }
+        }
+
+        @-moz-keyframes move {
+            0% {
+                background-position: 0% 0;
+            }
+
+            100% {
+                background-position: 100% 0;
+            }
+        }
+
+        @keyframes move {
+            0% {
+                background-position: 0% 0;
+            }
+
+            100% {
+                background-position: 100% 0;
+            }
+        }
     </style>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script>window.onscroll = function () { TopButton() }; function TopButton() { window.onscroll = function (ev) { if (window.scrollY > 10) { document.getElementById('top_button').className = "visible"; } else { document.getElementById('top_button').className = "unvisible"; } }; }</script>
-
-
-    <title>漢字勉強 - 20</title>
 </head>
 
 <body>
 
-    <div style="margin:auto;text-align:center;width:30vw;border-radius: 8px;background-color: #111114;font-size: 3vw;color: white;">
-        854/890
+    <div id="console"
+        style="box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);overflow:hidden;width:70vw;height:70vh;margin:auto;text-align:center;background-color: black;color: white;font-size:2vw;">
+        [Updating Kanji Database]<br> </div>
+    <div class="progressbar_background">
+        <div id="progressbar" style="width: 50%;"></div>
     </div>
-
-    <button id="top_button" class="unvisible" onclick="window.scroll({top: 0,behavior: 'smooth'});;">TOP</button>
-
-    <h1 style="text-align:center;font-size:10vw;"><a href="/" style="color: white">漢字勉強</a></h1>
-
-    <div style="text-align:center;margin:auto;margin: 3vh 2vw 3vh 2vw;"><a href="/get"><input class="dark_button"
-                type="submit" value="收集" style="font-size:4vw;margin-right:3vw"></a>
-        <form style="text-align:center;margin: 1vh 2vw 1vh 2vw;display:inline-block;" method="post" action="/test">
-            <input type="hidden" value="20" name="section">
-            <input class="dark_button" type="submit" value="試驗" style="font-size:4vw; margin-left:3vw">
-        </form>
-    </div>
-    <div style="text-align:center;margin:3vh 2vw 3vh 2vw;"><a href="/update"><input class="dark_button"
-                style="font-size:4vw;margin-right:3vw ;" type="submit" value="更新"></a><a href="/get"><input
-                type="submit" class="dark_button" value="收集" style="font-size:4vw;margin-left:3vw ;"></a></div>
-    <div id="test_result" style="text-align:center;margin:auto; width: 80vw; height: 50vh"></div>
+    <script>
+        function moveProgresssbar(endPercent) {
+            var elem = document.getElementById('progressbar');
+            var id = setInterval(frame, 10);
+            function frame() {
+                var width = Number(elem.style.width.split("%")[0]);
+                if (width >= endPercent) {
+                    clearInterval(id);
+                    i = 0;
+                } else {
+                    width++;
+                    elem.style.width = width + "%";
+                }
+            }
+        }
+    </script>
 </body>
+
+</html>
