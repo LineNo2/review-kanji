@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
     <script>
         function showAnswer(id) {
             if (document.getElementById(id).style.opacity == "1") {
@@ -275,7 +275,7 @@
             background: #555;
         }
     </style>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
     <script>window.onscroll = function () { TopButton() }; function TopButton() { window.onscroll = function (ev) { if (window.scrollY > 10) { document.getElementById('dark_top_button').className = "visible"; } else { document.getElementById('dark_top_button').className = "unvisible"; } }; }</script>
     <script>function resetCheck() { if (confirm('이 작업은 되돌릴 수 없습니다. 계속 하시겠습니까?')) location.href = '/reset?id=${title}'; }</script>
     <script>function deleteCheck() { location.href = '/delete?id=${title}&pwcode='+prompt('管理者 秘密番號 入力','秘密番號'); }</script>
