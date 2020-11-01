@@ -71,6 +71,7 @@ var app = http.createServer(function (request, response) {
     request.on('end', function () {
       var post = qs.parse(body);
       var html = '';
+      var bars = '';
       response.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
       html = eval('`' + fs.readFileSync(`./lib/html/test/1.html`, 'utf8') + '`');
       db.query(`SELECT * FROM kanji WHERE section=${post.section} ORDER BY RAND();`, function (error3, results_kanji, fields) {
@@ -79,6 +80,7 @@ var app = http.createServer(function (request, response) {
         html += `var item_total=${kanji_count};var kanji_table = {`
         results_kanji.forEach(function (item) {
           html += `${index++} : "${item.kanji}"`
+          bars += "<div class='bars'></div>"
           if (index != kanji_count) { html += `,` }
           else {
             html += eval('`' + fs.readFileSync(`./lib/html/test/2.html`, 'utf8') + '`');
@@ -105,7 +107,7 @@ var app = http.createServer(function (request, response) {
           if (post.answer == result[0]['oto']) {
             if (request.headers.referer.split("/")[3] === "test") {
               response.writeHead(200);
-              response.end(`<script>$('#score_background').css('display','block');$('#answer_result').removeClass('fas fa-times').addClass('far fa-circle');$('#score_content').css('color','#77dd77');index++;</script>`);
+              response.end(`<script>$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_right');index++;$('#answer_result').removeClass('fas fa-times').addClass('far fa-circle');$('#score_content').css('color','#77dd77');$('#score_background').toggle();</script>`);
             }
             sql = `UPDATE kanji SET result=1 WHERE kanji="${post.kanji}";`
             db.query(sql, function (error_score_process_if, result, fields2) {
@@ -113,20 +115,20 @@ var app = http.createServer(function (request, response) {
                 console.log("error_score_process_if has an error");
               }
               response.writeHead(200);
-              response.end(`<script>$('#score_background').css('display','block');$('#answer_result').removeClass('fas fa-times').addClass('far fa-circle');$('#score_content').css('color','#77dd77');index++;</script>`);
+              response.end(`<script>$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_right');index++;$('#answer_result').removeClass('fas fa-times').addClass('far fa-circle');$('#score_content').css('color','#77dd77');$('#score_background').toggle();</script>`);
             });
           }
           else {
             if (request.headers.referer.split("/")[3] === "test") {
               response.writeHead(200);
-              response.end(`<script>$('#score_background').css('display','block');$('#answer_result').removeClass('far fa-circle').addClass('fas fa-times');$('#score_content').css('color','#ff2424');index++;</script>`);
+              response.end(`<script>$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_wrong');index++;$('#answer_result').removeClass('far fa-circle').addClass('fas fa-times');$('#score_content').css('color','#ff2424');$('#score_background').toggle();</script>`);
             }
             db.query(sql, function (error_score_process_else, result, fields2) {
               if (error_score_process_else) {
                 console.log("error_score_process_else  has an error");
               }
               response.writeHead(200);
-              response.end(`<script>$('#score_background').css('display','block');$('#answer_result').removeClass('far fa-circle').addClass('fas fa-times');$('#score_content').css('color','#ff2424');index++;</script>`);
+              response.end(`<script>$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_wrong');index++;$('#answer_result').removeClass('far fa-circle').addClass('fas fa-times');$('#score_content').css('color','#ff2424');$('#score_background').toggle();</script>`);
             });
           }
         }
@@ -153,7 +155,7 @@ var app = http.createServer(function (request, response) {
         var count_O = 0;
         var count_tot = 0;
         result.forEach(function (item) {
-          html += `<tr ${item.result != 0 ? `` : `class="wrongAnswer"`}><th>${item.kanji}</th><th>${item.oto}</th><th ${item.result != 0 ? `style="color:violet"` : `style="color:#3700b3"`}>${item.result == 0 ? "X" : "O"}</th></tr>`
+          html += `<tr ${item.result != 0 ? `` : `class="wrongAnswer"`}><th style="cursor:pointer" onclick="location.href='https://ja.dict.naver.com/#/search?range=all&query=${item.kanji}';">${item.kanji}</th><th>${item.oto}</th><th ${item.result != 0 ? `style="color:violet"` : `style="color:#3700b3"`}>${item.result == 0 ? "X" : "O"}</th></tr>`
           if (item.result == 1) { count_O++; }
           count_tot++;
         })
@@ -170,6 +172,7 @@ var app = http.createServer(function (request, response) {
   }
   else if (pathname === '/review') {
     var html = '';
+    var bars = '';
     response.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
     html = eval('`' + fs.readFileSync(`./lib/html/review/1.html`, 'utf8') + '`');
     db.query(`SELECT * FROM kanji WHERE result=0 ORDER BY RAND();`, function (error_review, results_kanji, fields) {
@@ -181,6 +184,7 @@ var app = http.createServer(function (request, response) {
       html += `var item_total=${kanji_count};var kanji_table = {`
       results_kanji.forEach(function (item) {
         html += `${index++} : "${item.kanji}"`
+        bars += "<div class='bars'></div>"
         if (index != kanji_count) { html += `,` }
         else {
           html += eval('`' + fs.readFileSync(`./lib/html/review/2.html`, 'utf8') + '`');

@@ -65,18 +65,18 @@
 
     #title {
         text-align: center;
-        font-size: 7vh;
+        font-size: 17vw;
     }
 
     #scoreboard {
         text-align: center;
-        font-size: 5vh;
+        font-size: 10vw;
         color: white;
     }
 
     #kanji {
         display: block;
-        font-size: 10vh;
+        font-size: 20vw;
         text-align: center;
         margin-top: 0;
         margin-bottom: 5vh;
@@ -84,10 +84,10 @@
     }
 
     #textbox {
-        width: 11vh;
+        width: 20vw;
         background-color: #111114;
         color: white;
-        font-size: 11vh;
+        font-size: 20vw;
         margin-bottom: 5vh;
     }
 
@@ -146,6 +146,7 @@
             font-size: 7vw;
         }
     }
+
     #score_background {
         display: none;
         position: fixed;
@@ -167,11 +168,54 @@
         color: #77dd77;
         font-size: 50vh;
     }
+
+    #progressbar_background {
+        position: fixed;
+        left: 0;
+        top: 0;
+        margin: auto;
+        width: 5vw;
+        height: 100%;
+        background-color: #ddd;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .progressbar_wrong {
+        background-color: #ff2424;
+        animation: slidein 1s;
+    }
+
+    .progressbar_right {
+        background-color: #77dd77;
+        animation: slidein 1s;
+    }
+
+    .bars {
+        height: 100%;
+        width: 100%;
+    }
+
+    @keyframes slidein {
+        from {
+            height: 0%;
+            opacity: 0%;
+        }
+
+        to {
+            height: 100%;
+            opacity: 100%;
+        }
+    }
 </style>
 </head>
+
 <body> <a href="/">
         <h1 id="title" style="margin-top:0">漢字勉強</h1>
     </a>
+    <div id="progressbar_background">
+        ${bars}
+    </div>
     <div id="score_background">
         <div id="score_content">
             <i id="answer_result" class="fas" onclick="$('#score_background').css('display','none');"></i>
@@ -179,15 +223,16 @@
     </div>
     <div id="scoreboard"><span id="current_index">1</span>/<span id="total_index"></span></div>
     <div style="text-align: center;">
-        <h2 id="kanji">${results_kanji[0].kanji}</h2><input type="text" id="textbox" placeholder="音" maxlength="1" autocomplete="off"> 
+        <h2 id="kanji">${results_kanji[0].kanji}</h2><input type="text" id="textbox" placeholder="音" maxlength="1"
+            autocomplete="off">
         <p> <button id="execute" onclick="$('#score_background').css('display','block');">
                 <nobr>堤出</nobr>
             </button></p>
         <form method="post" action="/result"> <input type="hidden" name="section" value="${post.section}"> <input
-                id="move" style="opacity:0;margin:10vh" type="submit" value="移動"> </form>
+                id="move" style="display:none;margin:15vw" type="submit" value="移動"> </form>
     </div>
     <div class="getScript"></div>
-    <script> $('#total_index').text(item_total); function ajaxSend() { $.ajax({ url: "https://review-kanji.herokuapp.com/score_process", data: { answer: $('#textbox').val(), kanji: $('#kanji').text(), }, type: "POST", success: function (result) { $(".getScript").html(result); $('#kanji').text(kanji_table[index]); $('#current_index').text((index == item_total) ? index : (index + 1)); $('#textbox').val(''); if (index == item_total) { $('#execute').fadeOut(); $('#textbox').fadeOut(); $('#scoreboard').fadeOut(); $('#kanji').fadeOut(); $('#move').css('opacity', '1'); } } }); } $('#execute').click(function () { ajaxSend(); }); $(document).keypress(function (event) { var keycode = (event.keyCode ? event.keyCode : event.which); if (keycode == '13') { ajaxSend(); } }); </script>
+    <script> $('#total_index').text(item_total); function ajaxSend() { $.ajax({ url: "https://review-kanji.herokuapp.com/score_process", data: { answer: $('#textbox').val(), kanji: $('#kanji').text(), }, type: "POST", success: function (result) { $(".getScript").html(result); $('#kanji').text(kanji_table[index]); $('#current_index').text((index == item_total) ? index : (index + 1)); $('#textbox').val(''); if (index == item_total) { $('#execute').fadeOut(); $('#textbox').fadeOut(); $('#scoreboard').fadeOut(); $('#kanji').fadeOut(); $('#move').css('display', 'inline-block'); } } }); } $('#execute').click(function () { ajaxSend(); }); $(document).keypress(function (event) { var keycode = (event.keyCode ? event.keyCode : event.which); if (keycode == '13') { if ($('#score_background').css('display') === "none") { $('#execute').click(); } else { $('#score_background').toggle(); } } }); </script>
 </body>
 
 </html>
