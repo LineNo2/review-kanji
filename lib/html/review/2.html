@@ -286,7 +286,8 @@
     <div style="text-align: center;">
         <h2 id="kanji">${results_kanji[0].kanji}</h2><input type="text" id="textbox" placeholder="音" maxlength="1"
             autocomplete="off">
-        <p> <button id="execute" onclick="$('#score_background').css('display','block');">
+        <p> <button id="execute"
+                onclick="$('#score_content').css('display','none');$('#score_background').css('display','block');$('#loading_background').css('display','flex');">
                 <nobr>堤出</nobr>
             </button></p>
     </div>
@@ -323,14 +324,11 @@
         $(document).keypress(function (event) {
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if (keycode == '13') {
-                if (item_total >= index && $('#move').css('display') === "inline-block") {$('#move').click(); }
+                if ($('#score_background').css('display') === "none") {
+                    $('#execute').click();
+                }
                 else {
-                    if ($('#score_background').css('display') === "none") {
-                        $('#execute').click();
-                    }
-                    else {
-                        $('#score_background').toggle();
-                    }
+                    $('#score_background').toggle();
                 }
             }
         });  </script>
