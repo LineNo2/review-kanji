@@ -323,14 +323,17 @@
         $(document).keypress(function (event) {
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if (keycode == '13') {
-                if ($('#score_background').css('display') === "none") {
-                    $('#execute').click();
-                }
+                if (item_total >= index && $('#move').css('display') === "inline-block") {$('#move').click(); }
                 else {
-                    $('#score_background').toggle();
+                    if ($('#score_background').css('display') === "none") {
+                        $('#execute').click();
+                    }
+                    else {
+                        $('#score_background').toggle();
+                    }
                 }
             }
-        }); </script>
+        });  </script>
 </body>
 
 </html>
