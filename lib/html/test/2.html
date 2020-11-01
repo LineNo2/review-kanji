@@ -207,6 +207,61 @@
             opacity: 100%;
         }
     }
+
+    #loading_background {
+        display: none;
+        position: fixed;
+        left: 30vw;
+        top: 30vh;
+        margin: auto;
+        text-align: center;
+        width: 40vw;
+        height: 40vh;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .loading_bar {
+        background-color: #ddd;
+        height: 30vh;
+        width: 5vw;
+        margin: auto;
+    }
+
+    .loading_bar:nth-of-type(1) {
+        animation: loading 1s infinite;
+    }
+
+    .loading_bar:nth-of-type(2) {
+        animation: loading 1s infinite 250ms;
+    }
+
+    .loading_bar:nth-of-type(3) {
+        animation: loading 1s infinite 500ms;
+    }
+
+    .loading_bar:nth-of-type(4) {
+        animation: loading 1s infinite 250ms;
+    }
+
+    .loading_bar:nth-of-type(5) {
+        animation: loading 1s infinite;
+    }
+
+    @keyframes loading {
+        0% {
+            height: 30vh;
+        }
+
+        50% {
+            height: 5vh;
+        }
+
+        0% {
+            height: 30vh;
+        }
+
+    }
 </style>
 </head>
 
@@ -216,16 +271,24 @@
     <div id="progressbar_background">
         ${bars}
     </div>
+    <div id="loading_background">
+        <div class="loading_bar"></div>
+        <div class="loading_bar"></div>
+        <div class="loading_bar"></div>
+        <div class="loading_bar"></div>
+        <div class="loading_bar"></div>
+    </div>
     <div id="score_background">
         <div id="score_content">
-            <i id="answer_result" class="fas" onclick="$('#score_background').css('display','none');$('#score_content').css('display','none');"></i>
+            <i id="answer_result" class="fas"
+                onclick="$('#score_background').css('display','none');$('#score_content').css('display','none');"></i>
         </div>
     </div>
     <div id="scoreboard"><span id="current_index">1</span>/<span id="total_index"></span></div>
     <div style="text-align: center;">
         <h2 id="kanji">${results_kanji[0].kanji}</h2><input type="text" id="textbox" placeholder="音" maxlength="1"
             autocomplete="off">
-        <p> <button id="execute" onclick="$('#score_background').css('display','block');">
+        <p> <button id="execute" onclick="$('#score_background').css('display','block');$('#loading_background').css('display','flex');">
                 <nobr>堤出</nobr>
             </button></p>
         <form method="post" action="/result"> <input type="hidden" name="section" value="${post.section}"> <input
@@ -255,7 +318,7 @@
                         $('#move').css('display', 'inline-block');
                     }
                 },
-                error: function(){
+                error: function () {
                     $('#score_content>div').text("!");
                 }
             });

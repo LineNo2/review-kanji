@@ -207,6 +207,61 @@
             opacity: 100%;
         }
     }
+
+    #loading_background {
+        display: none;
+        position: fixed;
+        left: 30vw;
+        top: 30vh;
+        margin: auto;
+        text-align: center;
+        width: 40vw;
+        height: 40vh;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .loading_bar {
+        background-color: #ddd;
+        height: 30vh;
+        width: 5vw;
+        margin: auto;
+    }
+
+    .loading_bar:nth-of-type(1) {
+        animation: loading 1s infinite;
+    }
+
+    .loading_bar:nth-of-type(2) {
+        animation: loading 1s infinite 250ms;
+    }
+
+    .loading_bar:nth-of-type(3) {
+        animation: loading 1s infinite 500ms;
+    }
+
+    .loading_bar:nth-of-type(4) {
+        animation: loading 1s infinite 250ms;
+    }
+
+    .loading_bar:nth-of-type(5) {
+        animation: loading 1s infinite;
+    }
+
+    @keyframes loading {
+        0% {
+            height: 30vh;
+        }
+
+        50% {
+            height: 5vh;
+        }
+
+        0% {
+            height: 30vh;
+        }
+
+    }
 </style>
 </head>
 
@@ -215,6 +270,13 @@
     </a>
     <div id="progressbar_background">
         ${bars}
+    </div>
+    <div id="loading_background">
+        <div class="loading_bar"></div>
+        <div class="loading_bar"></div>
+        <div class="loading_bar"></div>
+        <div class="loading_bar"></div>
+        <div class="loading_bar"></div>
     </div>
     <div id="score_background">
         <div id="score_content">
