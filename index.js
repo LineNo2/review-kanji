@@ -107,7 +107,7 @@ var app = http.createServer(function (request, response) {
           if (post.answer == result[0]['oto']) {
             if (request.headers.referer.split("/")[3] === "test") {
               response.writeHead(200);
-              response.write(`<script>$('#loading_background').css('display','none');$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_right');$('#answer_result').removeClass('fas fa-times').addClass('far fa-circle');$('#score_content').css('color','#77dd77');$('#score_content').css('display','block');index++;</script>`);
+              response.end(`<script>$('#loading_background').css('display','none');$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_right');$('#answer_result').removeClass('fas fa-times').addClass('far fa-circle');$('#score_content').css('color','#77dd77');$('#score_content').css('display','block');index++;</script>`);
             }
             sql = `UPDATE kanji SET result=1 WHERE kanji="${post.kanji}";`
             db.query(sql, function (error_score_process_if, result, fields2) {
@@ -115,20 +115,20 @@ var app = http.createServer(function (request, response) {
                 console.log("error_score_process_if has an error");
               }
               response.writeHead(200);
-              response.write(`<script>$('#loading_background').css('display','none');$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_right');$('#answer_result').removeClass('fas fa-times').addClass('far fa-circle');$('#score_content').css('color','#77dd77');$('#score_content').css('display','block');index++;</script>`);
+              response.end(`<script>$('#loading_background').css('display','none');$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_right');$('#answer_result').removeClass('fas fa-times').addClass('far fa-circle');$('#score_content').css('color','#77dd77');$('#score_content').css('display','block');index++;</script>`);
             });
           }
           else {
             if (request.headers.referer.split("/")[3] === "test") {
               response.writeHead(200);
-              response.write(`<script>$('#loading_background').css('display','none');$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_wrong');$('#answer_result').removeClass('far fa-circle').addClass('fas fa-times');$('#score_content').css('color','#ff2424');$('#score_content').css('display','block');index++;</script>`);
+              response.end(`<script>$('#loading_background').css('display','none');$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_wrong');$('#answer_result').removeClass('far fa-circle').addClass('fas fa-times');$('#score_content').css('color','#ff2424');$('#score_content').css('display','block');index++;</script>`);
             }
             db.query(sql, function (error_score_process_else, result, fields2) {
               if (error_score_process_else) {
                 console.log("error_score_process_else  has an error");
               }
               response.writeHead(200);
-              response.write(`<script>$('#loading_background').css('display','none');$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_wrong');$('#answer_result').removeClass('far fa-circle').addClass('fas fa-times');$('#score_content').css('color','#ff2424');$('#score_content').css('display','block');index++;</script>`);
+              response.end(`<script>$('#loading_background').css('display','none');$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_wrong');$('#answer_result').removeClass('far fa-circle').addClass('fas fa-times');$('#score_content').css('color','#ff2424');$('#score_content').css('display','block');index++;</script>`);
             });
           }
         }
