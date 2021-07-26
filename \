@@ -71,7 +71,7 @@ module.exports = {
                 err_msg = e.message;
                 err_kanji = err_msg[err_msg.search("'") + 1];
                 responseText = err_kanji + " is already on the db";
-                callback_write(`<p style="color:red">${responseText}</p>`,90);
+                callback_write(`<p style="color:red">${responseText}</p>`);
                 console.log(responseText);
                 delete kanjiDict[err_kanji];
                 await saveKanjiToDB(kanjiDict);
@@ -102,7 +102,8 @@ module.exports = {
             callback_console(
               `<script>$('#console').attr({'style':'box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.3);overflow:scroll;overflow-x: hidden;width:70vw;height:70vh;margin:auto;text-align:center;background-color: black;color: white;font-size:2vw;'})</script>`
             );
-			callback_write(`<p style="color:white">${saved_kanji} were saved at section ${section_max + 1 } at ${datetime}</p>`,100);
+			console.log(saved_kanji)
+			callback_write(`<p style="color:white">${saved_kanji}</p>`);
 			callback_end(`<p style="color:green">${responseText}</p>`);
             console.log(sql2);
           } else {
@@ -128,7 +129,9 @@ module.exports = {
               section_max + 1
             },"${datetime}")`;
           saved_kanji +=
-              `{${key} : ${kanjiDict[key]}}`
+              `{${key} : ${kanjiDict[key]}} 을(를) ${
+                section_max + 1
+              }번째 섹션에 ${datetime}시에 저장 완료했습니다.\n`;
             total++;
           }
         }
@@ -163,6 +166,7 @@ module.exports = {
     );
 
     let d = new Date();
+    let total = 0;
     let nextpage_flag = true;
 
     let datetime = `${d.getFullYear()}-${
@@ -170,6 +174,7 @@ module.exports = {
     }-${d.getDate()} ${d.getHours()}`;
     let section_max;
     let last_kanji, first_kanji;
+    let sync = 0;
     let responseText;
     let kanjiDict = {};
 
