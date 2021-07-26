@@ -1,4 +1,4 @@
-node_modules/
+node_modules/*
 lib/js/_db.js
 lib/js/_getKanjiFromNaver.js
 lib/js/__getKanjiFromNaver.js
