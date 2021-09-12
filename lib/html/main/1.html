@@ -21,13 +21,13 @@
         function drawStacked() {
             var data = new google.visualization.DataTable();
             data.addColumn('string', '部分');
-            data.addColumn('number', '正答');
-            data.addColumn('number', '誤答');
+            data.addColumn('number', '正答率');
+            data.addColumn('number', '誤答率');
 
             data.addRows([${chart}]);
 
             var options = {
-                title: '暗記現況',
+                title: '暗記現況率',
                 isStacked: true,
                 backgroundColor: '#1a1a1f',
                 legendTextStyle: { color: 'white' },
@@ -36,7 +36,7 @@
                     textStyle: { color: 'white' }
                 },
                 vAxis: {
-                    ticks: [0, 30, 40, 45, 50, 55],
+                    ticks: [0, 50, 75, 100],
                     textStyle: { color: 'white' }
                 },
                 colors: ['#3700b3', '#BB86FC']

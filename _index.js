@@ -5,7 +5,7 @@ var fs = require('fs');
 
 var printMain = require('./lib/js/printMainPage.js');
 var printError = require('./lib/js/printErrorPage.js');
-var getKanji = require('./lib/js/__getKanjiFromNaver.js');
+var getKanji = require('./lib/js/getKanjiFromNaver.js');
 const { pwcode } = require('./lib/config/delete_config.json')
 var db = require('./lib/js/db.js');
 const { contains } = require('cheerio');

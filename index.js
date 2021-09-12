@@ -40,7 +40,8 @@ var app = http.createServer(function (request, response) {
       var count = 0;
       result_section.forEach(function (item) {
         if (section_number + 1 != count && count != 0) { chart += ","; }
-        chart += `['部分${item.id}', ${item.memorized} ,${item.total - item.memorized} ]`;
+		percent = parseInt(item.memorized)/parseInt(item.total)*100;
+        chart += `['部分${item.id}', ${percent} ,${100 - percent} ]`;
         count++;
       });
       if (queryData.id === undefined) {
