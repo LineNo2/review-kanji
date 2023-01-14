@@ -1,4 +1,4 @@
-lib/config/
+lib/config/*
 lib/js/_db.js
 lib/js/_getKanjiFromNaver.js
 lib/js/__getKanjiFromNaver.js
