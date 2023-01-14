@@ -25,13 +25,13 @@
 ### / 
 
 
-
+![main-top](https://user-images.githubusercontent.com/57629885/212472299-257917c6-54da-4f28-a6c9-37ec47cdf3b4.png)
 - 상단에는 `한자면강` 이라 써있다. 참고로 勉強는 공부의 일어 표현이다. 누르면 홈으로 이동한다.
 
 - `SECTION` 에는 40~50개 정도의 한자가 저장되어있다. 각 `SECTION` 을 누르면 /`?id=SECTION_NUM` 으로 이동한다.
 
   
-
+![main-bottom](https://user-images.githubusercontent.com/57629885/212472297-170fc0d0-0901-42f6-b025-c42e07c737ac.png)
 - 하단에는 `복습`탭, `갱신`과 `수집` 버튼이 있다.
   - `복습` 버튼은 등록된 전체 한자 중 틀렸던 한자를 시험볼 수 있게 해준다.
   - `갱신` 버튼은 하단에 기록된 각 `SECTION` 별 정답률을 갱신해준다.
@@ -46,7 +46,7 @@
 ### /`?id=SECTION_NUM`
 
 - 상단 부분은 동일하다.
-
+![section-bottom](https://user-images.githubusercontent.com/57629885/212472301-1dab8b9b-79d7-493a-953b-4f88e3ed06bb.png)
 - 하단 부분은 `시험`, `초기화`와 `삭제` 버튼이 있다.
   - `시험` 버튼은 해당 `SECTION`의 한자들을 시험볼 수 있게 해준다.
   - `초기화` 버튼은 해당 `SECTION`의 시험 결과를 초기화 해준다.
@@ -54,7 +54,7 @@
     - 함부로 실행하면 안되므로, 암호가 걸려있다. 다만 보안 수준은 형편없다.
 
 ### /test
-
+![test](https://user-images.githubusercontent.com/57629885/212472303-94285331-1e1e-4389-a2fa-df5bc85c91c2.gif)
 - 기본적으로 한자의 '음'만을 답하면 된다.
   - 뜻은 따로 물어보지 않는다.
   - 입력칸은 한 글자만 입력할 수 있도록 제한되어있다.
@@ -65,13 +65,15 @@
 - 마지막 문제까지 다 풀면 `/result` 페이지로 이동하는 버튼이 생성된다.
 
 ### /result 
-
+![score](https://user-images.githubusercontent.com/57629885/212472300-2afc5801-68c1-4c12-a3d0-7a69b1f0f9be.gif)
 - 틀린 문제에 형광 표시가 되어있다.
   - 한자를 누르면, 네이버 사전으로 이동해서 뜻을 보여준다.
 - SHOW 버튼을 누르면, 틀린 한자로 이동할 수 있다.
 - 페이지의 마지막에 도달하면, SCORE을 보여준다.
 
 ### /get
-
+![get](https://user-images.githubusercontent.com/57629885/212472296-6c9bf4a3-b8db-4542-bbe0-f2ec7a16ae4f.gif)
 - 네이버 사전에서 새로 등록된 한자를 크롤링하고, 새로운 `SECTION`을 생성해준다.
 - 따로 한자를 받는 부분이 있으면 좋겠으나, 본인이 네이버 단어사전을 자주 썼기 때문에 웹 크롤링을 선택했다.
+
+
