@@ -299,7 +299,8 @@
         $('#total_index').text(item_total);
         function ajaxSend() {
             $.ajax({
-                url: "https://review-kanji.herokuapp.com/score_process",
+                //url: "https://review-kanji.herokuapp.com/score_process",
+			  url: "http://121.173.114.173:7001/score_process",
                 data: {
                     answer: $('#textbox').val(),
                     kanji: $('#kanji').text(),

@@ -1,4 +1,4 @@
-node_modules/*
+lib/config/
 lib/js/_db.js
 lib/js/_getKanjiFromNaver.js
 lib/js/__getKanjiFromNaver.js
@@ -6,4 +6,6 @@ package-lock.json
 /example
 test.html
 notfound.html
+Procfile
+node_modules/
 test/

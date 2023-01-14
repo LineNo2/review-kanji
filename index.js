@@ -10,6 +10,7 @@ const { pwcode } = require('./lib/config/delete_config.json')
 var db = require('./lib/js/db.js');
 const { contains } = require('cheerio');
 
+console.log(process.env.DB_PW);
 
 setInterval(function () { db.query('SELECT 1'); }, 5000);
 
@@ -109,6 +110,7 @@ var app = http.createServer(function (request, response) {
             if (request.headers.referer.split("/")[3] === "test") {
               response.writeHead(200);
               response.end(`<script>$('#loading_background').css('display','none');$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_right');$('#answer_result').removeClass('fas fa-times').addClass('far fa-circle');$('#score_content').css('color','#77dd77');$('#score_content').css('display','block');index++;</script>`);
+			  return;
             }
             sql = `UPDATE kanji SET result=1 WHERE kanji="${post.kanji}";`
             db.query(sql, function (error_score_process_if, result, fields2) {
@@ -123,6 +125,7 @@ var app = http.createServer(function (request, response) {
             if (request.headers.referer.split("/")[3] === "test") {
               response.writeHead(200);
               response.end(`<script>$('#loading_background').css('display','none');$('.bars:nth-of-type('+(index+1)+')').addClass('progressbar_wrong');$('#answer_result').removeClass('far fa-circle').addClass('fas fa-times');$('#score_content').css('color','#ff2424');$('#score_content').css('display','block');index++;</script>`);
+			  return;
             }
             db.query(sql, function (error_score_process_else, result, fields2) {
               if (error_score_process_else) {
